@@ -3,18 +3,37 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Box, CardActionArea, CardActions, Divider, Grid } from "@mui/material";
+import { Box, CardActionArea, CardActions, Divider, Grid, CircularProgress } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { NavLink } from "react-router-dom";
 
 export default function TodaysDoctors() {
   const [doctors, setDoctors] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
   React.useEffect(() => {
     fetch("http://localhost:5000/doctors")
       .then((res) => res.json())
-      .then((data) => setDoctors(data));
+      .then((data) => {
+        setDoctors(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Typography>Error loading data</Typography>;
+  }
+
   return (
     <Grid
       container
@@ -33,7 +52,7 @@ export default function TodaysDoctors() {
         gap: "1rem",
       }}
     >
-      {doctors.slice(0,4).map((doctor) => (
+      {doctors.slice(0, 4).map((doctor) => (
         <NavLink
           key={doctor._id}
           to={"/addPatient/" + doctor.email}
@@ -50,7 +69,7 @@ export default function TodaysDoctors() {
                 component="img"
                 height="160"
                 image="https://img.freepik.com/free-photo/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture_409827-254.jpg?w=996&t=st=1659640512~exp=1659641112~hmac=3587a885638b8ca8621583b406c74569e2474e99107b4a5859e96a0e65bfa567.jpg"
-                alt="green iguana"
+                alt="Doctor"
               />
               <CardContent sx={{ textAlign: "left" }}>
                 <Typography gutterBottom variant="h6" component="div">

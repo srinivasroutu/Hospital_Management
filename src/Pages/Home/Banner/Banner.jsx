@@ -1,24 +1,36 @@
-import { Box, Paper, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { Box, Paper, Typography } from '@mui/material';
 import { FaAccessibleIcon, FaAmbulance, FaUserTie } from "react-icons/fa";
-import { GiCherish, } from "react-icons/gi";
-import { FiUsers, } from "react-icons/fi";
+import { GiCherish } from "react-icons/gi";
+import { FiUsers } from "react-icons/fi";
 import { TbBed } from "react-icons/tb";
 import { MdPersonPin } from "react-icons/md";
 
 const Banner = () => {
+  const [doctorCount, setDoctorCount] = useState(0);
+
+  useEffect(() => {
+    // Fetch the doctor count from your API or state
+    // Example: fetch("http://localhost:5000/doctorCount")
+    //   .then((res) => res.json())
+    //   .then((data) => setDoctorCount(data.count));
+
+    // For now, using a static value for demonstration
+    setDoctorCount(3);
+  }, []); // Make sure to add dependencies if needed
+
   return (
-    <Box >
+    <Box>
       <Box sx={{
         display: 'flex',
-        justifyContent : {xs:'center', sm:'center', md:'space-around', lg:'space-around', xl:'center'},
+        justifyContent: { xs: 'center', sm: 'center', md: 'space-around', lg: 'space-around', xl: 'center' },
         alignItems: 'center',
         gap: '1rem 2.6rem',
         flexWrap: 'wrap',
         width: '100%',
-        fontFamily:'monospace' 
+        fontFamily: 'monospace'
       }}>
-        <Paper elevation={2} sx={{ padding: '1rem', width:'14rem',}} >
+        <Paper elevation={2} sx={{ padding: '1rem', width: '14rem', }} >
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
             <div>
               <GiCherish style={{
@@ -30,15 +42,15 @@ const Banner = () => {
               }} />
             </div>
             <div>
-              <Typography sx={{ fontWeight: '800' }}>128</Typography>
+              <Typography sx={{ fontWeight: '800' }}>{doctorCount}</Typography>
               <p>Doctors</p>
             </div>
           </Box>
           <Typography>
-            3 doctors joined today
+            {`${doctorCount} doctor${doctorCount !== 1 ? 's' : ''} joined today`}
           </Typography>
         </Paper>
-        <Paper elevation={2} sx={{ padding: '1rem', width:'14rem' }}>
+        <Paper elevation={2} sx={{ padding: '1rem', width: '14rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
             <div>
               <FaAccessibleIcon style={{
@@ -58,7 +70,7 @@ const Banner = () => {
             122 new patients admitted
           </Typography>
         </Paper>
-        <Paper elevation={2} sx={{ padding: '1rem', width:'14rem' }}>
+        <Paper elevation={2} sx={{ padding: '1rem', width: '14rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
             <div>
               <FiUsers style={{
@@ -79,7 +91,7 @@ const Banner = () => {
           </Typography>
         </Paper>
 
-        <Paper elevation={2} sx={{ padding: '1rem', width:'14rem' }}>
+        <Paper elevation={2} sx={{ padding: '1rem', width: '14rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
             <div>
               <TbBed style={{
@@ -99,7 +111,7 @@ const Banner = () => {
             10 bed remaining usable
           </Typography>
         </Paper>
-        <Paper elevation={2} sx={{ padding: '1rem', width:'14rem' }}>
+        <Paper elevation={2} sx={{ padding: '1rem', width: '14rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
             <div>
               <FaAmbulance style={{
@@ -119,7 +131,7 @@ const Banner = () => {
             19 Ambulence In service
           </Typography>
         </Paper>
-        <Paper elevation={2} sx={{ padding: '1rem', width:'14rem' }}>
+        <Paper elevation={2} sx={{ padding: '1rem', width: '14rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
             <div>
               <MdPersonPin style={{

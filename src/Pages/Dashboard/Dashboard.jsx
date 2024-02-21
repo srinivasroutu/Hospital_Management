@@ -86,37 +86,7 @@ export default function NewHeader() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-    // User login check
-    // const {user} = useAuth();
-    // const getTv = () => {
-    //     fetch("https://iptv-org.github.io/iptv/countries/br.m3u")
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             let channels = [];
-    //             let lines = data.split("\n");
-    //             let currentChannel = {};
-    //             for (let i = 0; i < lines.length; i++) {
-    //                 let line = lines[i].trim();
-
-    //                 if (line.startsWith("#EXTINF:")) {
-    //                     let info = line.split(/,(.+)/);
-    //                     currentChannel["name"] = info[1];
-    //                     currentChannel["logo"] = info[0].match(/tvg-logo="(.*?)"/)[1];
-    //                 } else if (line.startsWith("http")) {
-    //                     currentChannel["url"] = line;
-    //                     channels.push(currentChannel);
-    //                     currentChannel = {};
-    //                 }
-    //             }
-
-    //             console.log(channels);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error:', error);
-    //         });
-    // }
-    // getTv();
-
+   
     return (
         <Box sx={{ display: 'flex', background: '#F6F6F6' }} >
             <CssBaseline />

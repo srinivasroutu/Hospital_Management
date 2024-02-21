@@ -1,124 +1,128 @@
-import { Button, IconButton, Snackbar, TextField, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useRef } from 'react'
-import emailjs from '@emailjs/browser';
+import React, { useRef, useState } from 'react';
+import { Button, Snackbar, TextField, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
 
-const Feedback = () => {
-    const form = useRef();
-    function sendEmail(e) {
-        emailjs.sendForm('service_jjhtxzt', 'template_h81rxii', form.current, 'user_0KA7wjoGRk8rOP5DKlqn4')
-            .then((result) => {
-                console.log(result.text);
-            }, (error) => {
-                console.log(error.text);
-            });
-        e.target.reset()
-        // alert('Your email already sent! Thanks for contributing with us :)')
-        e.preventDefault()
+const AlzheimerPrediction = () => {
+  const form = useRef();
+  const [predictionResult, setPredictionResult] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  function predictAlzheimer(e) {
+    e.preventDefault();
+
+    const formData = new FormData(form.current);
+    const fileInput = document.querySelector('input[type="file"]');
+
+    if (fileInput.files.length === 0) {
+      alert('Please select an image.');
+      return;
     }
-    const [snackPack, setSnackPack] = React.useState([]);
-    const [open, setOpen] = React.useState(false);
-    const [messageInfo, setMessageInfo] = React.useState(undefined);
 
-    React.useEffect(() => {
-        if (snackPack.length && !messageInfo) {
-            // Set a new snack when we don't have an active one
-            setMessageInfo({ ...snackPack[0] });
-            setSnackPack((prev) => prev.slice(1));
-            setOpen(true);
-        } else if (snackPack.length && messageInfo && open) {
-            // Close an active snack when a new one is added
-            setOpen(false);
-        }
-    }, [snackPack, messageInfo, open]);
+    formData.append('image', fileInput.files[0]);
 
-    const handleClick = (message) => () => {
-        setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
-    };
+    axios.post('http://127.0.0.1:5000/predictAlzheimer', formData)
+      .then(response => {
+        setPredictionResult(response.data.result);
+        setErrorMessage(null);
+        handleClick('Alzheimer\'s prediction successful')();
+      })
+      .catch(error => {
+        console.error('Error predicting Alzheimer\'s:', error);
+        setErrorMessage('Error predicting Alzheimer\'s');
+        setPredictionResult(null);
+        handleClick('Error predicting Alzheimer\'s')();
+      });
+  }
 
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
+  const [snackPack, setSnackPack] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
 
-    const handleExited = () => {
-        setMessageInfo(undefined);
-    };
+  React.useEffect(() => {
+    if (snackPack.length && !messageInfo) {
+      setMessageInfo({ ...snackPack[0] });
+      setSnackPack((prev) => prev.slice(1));
+      setOpen(true);
+    } else if (snackPack.length && messageInfo && open) {
+      setOpen(false);
+    }
+  }, [snackPack, messageInfo, open]);
 
-    return (
-        <Box sx={{
-            background: '#fff',
-            padding: '1rem 0.1rem',
-            borderRadius: '0.5rem',
-            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-        }} >
-            <Typography variant="h5" sx={{ fontFamily: 'monospace' }}>
-                Feedback
-            </Typography>
-            <form onSubmit={sendEmail} ref={form}>
-                <TextField
-                    autoComplete='off'
-                    id="outlined-multiline-flexible"
-                    label="Your Name Here"
-                    // color="secondary"
-                    name='name'
-                    sx={{ width: '90%', mt: 3 }}
-                />
-                <TextField
-                    autoComplete='off'
-                    id="outlined-multiline-flexible"
-                    label="Your Email Here"
-                    name='email'
-                    sx={{ width: '90%', mt: 3 }}
-                />
-                <TextField
-                    autoComplete='off'
-                    id="outlined-multiline-flexible"
-                    label="Subject Here"
-                    name='subject'
-                    sx={{ width: '90%', mt: 3 }}
-                />
-                <TextField
-                    autoComplete='off'
-                    id="outlined-multiline-flexible"
-                    label="Write Your Suggession Here"
-                    multiline
-                    rows={8}
-                    name='message'
-                    sx={{ width: '90%', mt: 4 }}
-                />
-                <Box sx={{ py: 2 }}>
-                    <Button
-                        type='submit' color='secondary' variant='contained' sx={{ width: '90%' }}
-                        onClick={handleClick('Your email has been sent')}>
-                        Send Message
-                    </Button>
-                    <Snackbar
-                        key={messageInfo ? messageInfo.key : undefined}
-                        open={open}
-                        autoHideDuration={6000}
-                        onClose={handleClose}
-                        TransitionProps={{ onExited: handleExited }}
-                        message={messageInfo ? messageInfo.message : undefined}
-                        action={
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                sx={{ p: 0.5 }}
-                                onClick={handleClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                        }
-                    />
-                </Box>
-            </form>
+  const handleClick = (message) => () => {
+    setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
+  };
 
-        </Box>
-    )
-}
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
 
-export default Feedback
+  const handleExited = () => {
+    setMessageInfo(undefined);
+  };
+
+  return (
+    <div>
+      <h3 style={{ marginTop: "1rem", textAlign: "left", color: 'orange' }}>
+        {/* Display a message or title */}
+      </h3>
+      <form onSubmit={predictAlzheimer} ref={form}>
+        <TextField
+          autoComplete='off'
+          id="outlined-multiline-flexible"
+          label="Patient's Name"
+          name='name'
+          sx={{ width: '90%', mt: 3 }}
+        />
+        <TextField
+          type="file"
+          id="outlined-multiline-flexible"
+          label="Upload Brain Image"
+          name='image'
+          inputProps={{ accept: '.jpg, .jpeg, .png' }}
+          sx={{ width: '90%', mt: 3 }}
+        />
+        <Button
+          type='submit' color='secondary' variant='contained' sx={{ width: '90%', mt: 4 }}
+        >
+          Predict Alzheimer's
+        </Button>
+        <Snackbar
+          key={messageInfo ? messageInfo.key : undefined}
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          TransitionProps={{ onExited: handleExited }}
+          message={messageInfo ? messageInfo.message : undefined}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              sx={{ p: 0.5 }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          }
+        />
+      </form>
+      {errorMessage && (
+        <div>
+          <h4>Error:</h4>
+          <p>{errorMessage}</p>
+        </div>
+      )}
+      {predictionResult !== null && !errorMessage && (
+        <div>
+          <h4>Prediction Result:</h4>
+          <p>{predictionResult}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AlzheimerPrediction;
